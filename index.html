@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Break Room — Gaming Lounge</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --accent: #c8ff00;
+    --accent2: #ff3cac;
+    --accent3: #3cffd0;
+    --text: #f0f0f5;
+    --muted: #6b6b80;
+    --border: rgba(200,255,0,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.15s ease, left 0.1s ease, top 0.1s ease;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--text); }
+
+  nav ul {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  nav a {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: var(--bg) !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 2px;
+    font-size: 0.75rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.1em;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+
+  .nav-cta:hover { background: #d4ff33 !important; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    padding: 7rem 3rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,255,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,255,0,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridScroll 20s linear infinite;
+  }
+
+  @keyframes gridScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(200,255,0,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,60,172,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    bottom: 10%; right: 5%;
+    animation: pulse 6s ease-in-out infinite reverse;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    max-width: 900px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200,255,0,0.1);
+    border: 1px solid rgba(200,255,0,0.3);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 1.2s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    animation: fadeUp 0.9s 0.1s ease both;
+  }
+
+  .hero h1 .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(200,255,0,0.5);
+    display: block;
+  }
+
+  .hero h1 .accent-word { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    margin: 2rem auto 3rem;
+    max-width: 480px;
+    line-height: 1.7;
+    animation: fadeUp 0.9s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    animation: fadeUp 0.9s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 2px;
+    cursor: none;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(200,255,0,0.4);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 2px;
+    cursor: none;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 4rem;
+    justify-content: center;
+    margin-top: 5rem;
+    animation: fadeUp 0.9s 0.4s ease both;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* SCROLL TICKER */
+  .ticker {
+    background: var(--accent);
+    padding: 0.75rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .ticker-inner {
+    display: inline-block;
+    animation: tickerMove 20s linear infinite;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--bg);
+  }
+
+  .ticker-inner span { margin: 0 2rem; }
+
+  @keyframes tickerMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 3rem; }
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: 0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    max-width: 450px;
+  }
+
+  /* FEATURES */
+  .features {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .features-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: 4rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+  }
+
+  .feature-card {
+    background: var(--card);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .feature-card:hover { background: #1c1c28; }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(200,255,0,0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .feature-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .feature-tag {
+    display: inline-block;
+    background: rgba(200,255,0,0.1);
+    color: var(--accent);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* GAMES */
+  .games-section { background: var(--surface); }
+
+  .games-inner { max-width: 1200px; margin: 0 auto; }
+
+  .games-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 260px 260px;
+    gap: 1.5px;
+    background: var(--border);
+  }
+
+  .game-card {
+    background: var(--card);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+  }
+
+  .game-card:first-child { grid-row: span 2; }
+
+  .game-bg {
+    position: absolute;
+    inset: 0;
+    font-size: 7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.08;
+    transition: opacity 0.3s, transform 0.3s;
+    user-select: none;
+  }
+
+  .game-card:hover .game-bg { opacity: 0.14; transform: scale(1.05); }
+
+  .game-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 70%;
+    background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, transparent 100%);
+  }
+
+  .game-info { position: relative; z-index: 1; }
+
+  .game-genre {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  .game-card:first-child .game-name { font-size: 2.5rem; }
+
+  .game-players {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  /* PRICING */
+  .pricing-inner { max-width: 1100px; margin: 0 auto; }
+
+  .pricing-header { text-align: center; margin-bottom: 4rem; }
+  .pricing-header .section-desc { margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+  }
+
+  .price-card {
+    background: var(--card);
+    padding: 3rem 2.5rem;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .price-card.featured {
+    background: #1a1a26;
+    outline: 1.5px solid var(--accent);
+    outline-offset: -1.5px;
+    z-index: 1;
+  }
+
+  .price-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    padding: 0.3rem 1rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .price-tier {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 1rem;
+  }
+
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
+    letter-spacing: 0.03em;
+  }
+
+  .price-amount span {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .price-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 1rem 0 2rem;
+    line-height: 1.6;
+  }
+
+  .price-features {
+    list-style: none;
+    margin-bottom: 2.5rem;
+  }
+
+  .price-features li {
+    font-size: 0.82rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text);
+  }
+
+  .price-features li::before {
+    content: '—';
+    color: var(--accent);
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .btn-full {
+    display: block;
+    text-align: center;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.9rem;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .btn-full:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .btn-full-outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+  }
+
+  .btn-full-outline:hover { border-color: var(--accent); }
+
+  /* VIBE SECTION */
+  .vibe { background: var(--surface); }
+
+  .vibe-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .vibe-visual {
+    position: relative;
+    height: 500px;
+  }
+
+  .vibe-card {
+    position: absolute;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .vibe-card.main {
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    background: linear-gradient(135deg, #111118 0%, #1a1a26 100%);
+    border-color: rgba(200,255,0,0.2);
+  }
+
+  .vibe-card.overlay1 {
+    bottom: -1.5rem; right: -1.5rem;
+    width: 180px; height: 100px;
+    padding: 1.25rem;
+    background: var(--accent);
+    border: none;
+  }
+
+  .vibe-card.overlay1 .ov-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(10,10,15,0.6);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .vibe-card.overlay1 .ov-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--bg);
+    line-height: 1;
+    margin-top: 0.2rem;
+  }
+
+  .vibe-card.overlay2 {
+    top: -1rem; left: -1rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255,60,172,0.15);
+    border-color: rgba(255,60,172,0.3);
+  }
+
+  .online-dot {
+    width: 6px; height: 6px;
+    background: #3cffd0;
+    border-radius: 50%;
+    display: inline-block;
+    animation: blink 1.5s infinite;
+    margin-right: 0.4rem;
+  }
+
+  .online-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent3);
+  }
+
+  .vibe-list { margin-top: 2.5rem; }
+
+  .vibe-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vibe-item-icon {
+    width: 36px; height: 36px;
+    background: rgba(200,255,0,0.08);
+    border: 1px solid rgba(200,255,0,0.2);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .vibe-item h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .vibe-item p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* TESTIMONIALS */
+  .testi-inner { max-width: 1200px; margin: 0 auto; }
+
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+    margin-top: 3rem;
+  }
+
+  .testi-card {
+    background: var(--card);
+    padding: 2rem;
+    transition: background 0.3s;
+  }
+
+  .testi-card:hover { background: #1c1c28; }
+
+  .testi-stars {
+    color: var(--accent);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .testi-text {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .testi-avatar {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--bg);
+    font-family: 'Bebas Neue', sans-serif;
+    flex-shrink: 0;
+  }
+
+  .testi-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .testi-handle {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* CTA */
+  .cta-section {
+    background: var(--accent);
+    text-align: center;
+    padding: 6rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: 'BREAK';
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30vw;
+    color: rgba(0,0,0,0.05);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .cta-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    color: var(--bg);
+    line-height: 0.95;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .cta-section p {
+    font-size: 1rem;
+    color: rgba(10,10,15,0.65);
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .btn-dark {
+    background: var(--bg);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s;
+    position: relative;
+  }
+
+  .btn-dark:hover { transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 4rem 3rem 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-brand .logo { display: inline-block; margin-bottom: 1rem; }
+  .footer-brand p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; max-width: 280px; }
+
+  .footer-col h4 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 1.25rem;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col li { margin-bottom: 0.75rem; }
+
+  .footer-col a {
+    font-size: 0.82rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+
+  .footer-bottom p {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-link {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--muted);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .social-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,255,0,0.05);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 900px) {
+    nav ul { display: none; }
+    .features-header, .vibe-inner { grid-template-columns: 1fr; }
+    .features-grid, .pricing-grid, .testi-grid { grid-template-columns: 1fr; }
+    .games-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .game-card:first-child { grid-column: span 2; grid-row: auto; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 2rem; }
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">THE <span>BREAK</span> ROOM</a>
+  <ul>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#features">Amenities</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#vibes">Vibes</a></li>
+    <li><a href="#" class="nav-cta">Book a Seat</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><div class="dot"></div> Now Open — Pune's Dopest Gaming Spot</div>
+    <h1>TAKE <span class="accent-word">YOUR</span> <span class="line2">BREAK.</span></h1>
+    <p class="hero-sub">The Break Room is where the grind stops and the game begins. High-end rigs, chilled vibes, and a community that actually slaps.</p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">Book Your Session</a>
+      <a href="#games" class="btn-outline">See What We Run</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">40+</div>
+        <div class="stat-label">Gaming Rigs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4K</div>
+        <div class="stat-label">Ultra Displays</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Open Hours</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Good Times</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>HIGH-END RIGS</span><span>★</span>
+    <span>TOURNAMENT ZONE</span><span>★</span>
+    <span>CONSOLE CORNER</span><span>★</span>
+    <span>VR PODS</span><span>★</span>
+    <span>CHILL LOUNGE</span><span>★</span>
+    <span>SNACK BAR</span><span>★</span>
+    <span>COMMUNITY EVENTS</span><span>★</span>
+    <span>HIGH-END RIGS</span><span>★</span>
+    <span>TOURNAMENT ZONE</span><span>★</span>
+    <span>CONSOLE CORNER</span><span>★</span>
+    <span>VR PODS</span><span>★</span>
+    <span>CHILL LOUNGE</span><span>★</span>
+    <span>SNACK BAR</span><span>★</span>
+    <span>COMMUNITY EVENTS</span><span>★</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="features">
+    <div class="features-header reveal">
+      <div>
+        <div class="section-label">// amenities</div>
+        <div class="section-title">BUILT FOR<br>REAL ONES</div>
+      </div>
+      <p class="section-desc">We didn't cut corners. Every detail from the chairs to the chips was picked to make your session actually worth it.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-icon">🖥️</span>
+        <h3>RTX 4090 Rigs</h3>
+        <p>Every PC station runs bleeding-edge hardware. 240Hz displays, mechanical keyboards, and zero lag. Play like the pros do.</p>
+        <span class="feature-tag">40 Stations</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🎮</span>
+        <h3>Console Corner</h3>
+        <p>PS5, Xbox Series X, and Switch setups on 65" OLEDs. Couch co-op the way it's supposed to feel. Bring your squad.</p>
+        <span class="feature-tag">12 Consoles</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🥽</span>
+        <h3>VR Experience</h3>
+        <p>Full-room VR pods with Meta Quest Pro and PSVR2. Get lost in worlds that don't exist — or get wrecked in Beat Saber.</p>
+        <span class="feature-tag">6 Pods</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🏆</span>
+        <h3>Tournament Zone</h3>
+        <p>Weekly brackets, cash prizes, and the kind of rivalry that keeps things spicy. Our streaming setup is production-grade.</p>
+        <span class="feature-tag">Every Weekend</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🧃</span>
+        <h3>The Snack Rack</h3>
+        <p>Energy drinks, gaming fuel, loaded fries, and actual good food. Because no one plays well on an empty stomach.</p>
+        <span class="feature-tag">All Day</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">💤</span>
+        <h3>Chill Zones</h3>
+        <p>Not always about the grind. Bean bags, ambient playlists, board games, and spaces to just hang between rounds.</p>
+        <span class="feature-tag">Lounge Access</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games" class="games-section">
+  <div class="games-inner">
+    <div class="games-header reveal">
+      <div>
+        <div class="section-label">// game library</div>
+        <div class="section-title">WHAT'S<br>RUNNING</div>
+      </div>
+      <p class="section-desc" style="text-align:right;">500+ titles across all genres. If we don't have it, we'll get it.</p>
+    </div>
+    <div class="games-grid">
+      <div class="game-card" style="background: linear-gradient(135deg, #0a0a0f 0%, #1a0f1f 100%);">
+        <div class="game-bg">🔫</div>
+        <div class="game-info">
+          <div class="game-genre">FPS / Battle Royale</div>
+          <div class="game-name">Valorant + Warzone</div>
+          <div class="game-players">🟢 24 players online now</div>
+        </div>
+      </div>
+      <div class="game-card" style="background: linear-gradient(135deg, #0a0f15 0%, #0f1a2a 100%);">
+        <div class="game-bg">⚔️</div>
+        <div class="game-info">
+          <div class="game-genre">MOBA</div>
+          <div class="game-name">DOTA 2</div>
+          <div class="game-players">🟢 8 players</div>
+        </div>
+      </div>
+      <div class="game-card" style="background: linear-gradient(135deg, #0f0a15 0%, #1f1030 100%);">
+        <div class="game-bg">🏎️</div>
+        <div class="game-info">
+          <div class="game-genre">Racing</div>
+          <div class="game-name">Forza H5</div>
+          <div class="game-players">🟢 4 players</div>
+        </div>
+      </div>
+      <div class="game-card" style="background: linear-gradient(135deg, #0f150a 0%, #1a2a10 100%);">
+        <div class="game-bg">⚽</div>
+        <div class="game-info">
+          <div class="game-genre">Sports</div>
+          <div class="game-name">EA FC 25</div>
+          <div class="game-players">🟢 12 players</div>
+        </div>
+      </div>
+      <div class="game-card" style="background: linear-gradient(135deg, #150a0a 0%, #2a1010 100%);">
+        <div class="game-bg">🗡️</div>
+        <div class="game-info">
+          <div class="game-genre">RPG / Action</div>
+          <div class="game-name">Elden Ring</div>
+          <div class="game-players">🟢 6 players</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIBE -->
+<section id="vibes" class="vibe">
+  <div class="vibe-inner">
+    <div class="vibe-visual reveal">
+      <div class="vibe-card main">
+        🎮
+        <p style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.1em; color:var(--muted); margin-top:0.5rem;">THE EXPERIENCE</p>
+      </div>
+      <div class="vibe-card overlay1">
+        <div class="ov-label">Players Today</div>
+        <div class="ov-num">247</div>
+      </div>
+      <div class="vibe-card overlay2">
+        <span class="online-dot"></span>
+        <span class="online-text">38 Online Now</span>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="section-label">// the vibe check</div>
+      <div class="section-title">MORE THAN<br>JUST GAMING</div>
+      <p class="section-desc">We're building a space where you actually want to hang out — not just grind.</p>
+      <div class="vibe-list">
+        <div class="vibe-item">
+          <div class="vibe-item-icon">🌙</div>
+          <div>
+            <h4>Late Night Sessions</h4>
+            <p>We're open 24/7 for night owls. Same premium experience at 3AM as 3PM. Quiet mode or loud — you choose.</p>
+          </div>
+        </div>
+        <div class="vibe-item">
+          <div class="vibe-item-icon">🎧</div>
+          <div>
+            <h4>Curated Atmosphere</h4>
+            <p>Zones with different energy levels. Need to focus? Silent zone. Want to hype? Social floor. You pick your vibe.</p>
+          </div>
+        </div>
+        <div class="vibe-item">
+          <div class="vibe-item-icon">🤝</div>
+          <div>
+            <h4>Community Events</h4>
+            <p>Game launches, watch parties, collab nights with local creators. This isn't just a lounge — it's a scene.</p>
+          </div>
+        </div>
+        <div class="vibe-item">
+          <div class="vibe-item-icon">📡</div>
+          <div>
+            <h4>Streaming Studio</h4>
+            <p>Members get access to our pro-grade streaming room. Start your content era right here. We'll help you set it up.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="pricing-inner">
+    <div class="pricing-header reveal">
+      <div class="section-label">// pricing</div>
+      <div class="section-title">YOUR MOVE</div>
+      <p class="section-desc">Drop in when you want, or lock in a membership and own the place. No hidden fees.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">Drop-In</div>
+        <div class="price-amount">₹80 <span>/ hr</span></div>
+        <p class="price-desc">Pay per hour. Perfect for casual sessions when you just want to vibe for a bit.</p>
+        <ul class="price-features">
+          <li>Any available PC station</li>
+          <li>Game library access</li>
+          <li>Lounge access</li>
+          <li>Snack bar access</li>
+          <li>No minimum hours</li>
+        </ul>
+        <a href="#" class="btn-full btn-full-outline">Walk In</a>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="price-tier">Member Pass</div>
+        <div class="price-amount">₹999 <span>/ mo</span></div>
+        <p class="price-desc">20 hours monthly, priority booking, member discounts, and access to everything we've got.</p>
+        <ul class="price-features">
+          <li>20 hours included</li>
+          <li>Priority seat booking</li>
+          <li>VR pod access</li>
+          <li>Tournament entry included</li>
+          <li>10% off snack bar</li>
+          <li>Console corner access</li>
+        </ul>
+        <a href="#" class="btn-full">Get This One</a>
+      </div>
+      <div class="price-card reveal">
+        <div class="price-tier">Crew Plan</div>
+        <div class="price-amount">₹599 <span>/ mo each</span></div>
+        <p class="price-desc">5-person group plan. Best value for squads who show up together and stay together.</p>
+        <ul class="price-features">
+          <li>15 hours each / month</li>
+          <li>Reserved group bay</li>
+          <li>VR pod priority</li>
+          <li>Streaming studio access</li>
+          <li>Exclusive crew events</li>
+          <li>Custom group tag</li>
+        </ul>
+        <a href="#" class="btn-full btn-full-outline">Build Your Squad</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background: var(--surface);">
+  <div class="testi-inner">
+    <div class="reveal">
+      <div class="section-label">// what they say</div>
+      <div class="section-title">THE CROWD<br>HAS SPOKEN</div>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Bro this place actually has good food AND good PCs?? The 4090 rigs are no joke — played Valorant without a single frame drop. Worth every rupee."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">RK</div>
+          <div>
+            <div class="testi-name">Rohan K.</div>
+            <div class="testi-handle">@rk_fps</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Came for the VR, stayed for the whole vibe. The chill zones are actually chill and the staff don't give you a hard time. Rare W for a gaming place."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">SA</div>
+          <div>
+            <div class="testi-name">Sneha A.</div>
+            <div class="testi-handle">@sneha.creates</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Our whole friend group got the crew plan and it's lowkey been one of the best decisions this year. The tournament weekends are insane hype."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AP</div>
+          <div>
+            <div class="testi-name">Arjun P.</div>
+            <div class="testi-handle">@arjun.plays</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>READY TO<br>TAKE YOUR BREAK?</h2>
+  <p>Your station is waiting. Just show up (or book ahead if you're not about that risk).</p>
+  <a href="#pricing" class="btn-dark">Reserve a Seat →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">THE <span>BREAK</span> ROOM</a>
+        <p>Pune's premier gaming lounge. Built for the current generation, run by people who actually game.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#">Games Library</a></li>
+          <li><a href="#">PC Stations</a></li>
+          <li><a href="#">Console Zone</a></li>
+          <li><a href="#">VR Experience</a></li>
+          <li><a href="#">Tournaments</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <ul>
+          <li><a href="#">Discord Server</a></li>
+          <li><a href="#">Events Calendar</a></li>
+          <li><a href="#">Leaderboards</a></li>
+          <li><a href="#">Creator Program</a></li>
+          <li><a href="#">Become a Partner</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="#">Location & Hours</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 The Break Room Gaming Lounge. All rights reserved.</p>
+      <div class="social-links">
+        <a href="#" class="social-link" title="Discord">💬</a>
+        <a href="#" class="social-link" title="Instagram">📸</a>
+        <a href="#" class="social-link" title="Twitter/X">🐦</a>
+        <a href="#" class="social-link" title="YouTube">▶️</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+    ring.style.left = mx + 'px';
+    ring.style.top = my + 'px';
+  });
+
+  document.querySelectorAll('a, button, .feature-card, .game-card, .price-card, .testi-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2.5)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1.5)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1)';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
