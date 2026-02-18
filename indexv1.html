@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Break Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0d0d0d;
+    --card: #161616;
+    --accent: #c8ff00;
+    --text: #f2f2f2;
+    --muted: #666;
+    --border: #222;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(13,13,13,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 99;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+
+  .logo span { color: var(--text); }
+
+  nav a {
+    background: var(--accent);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.4rem;
+    border-radius: 3px;
+    text-decoration: none;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 80%, rgba(200,255,0,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(200,255,0,0.3);
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 12vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.03em;
+  }
+
+  .hero h1 .outline {
+    -webkit-text-stroke: 1.5px rgba(200,255,0,0.4);
+    color: transparent;
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    margin: 1.5rem auto 2.5rem;
+    max-width: 400px;
+    line-height: 1.7;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-p {
+    background: var(--accent);
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .btn-p:hover { opacity: 0.85; }
+
+  .btn-s {
+    background: transparent;
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .btn-s:hover { border-color: var(--accent); }
+
+  /* SECTION */
+  .section {
+    padding: 4.5rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.04em;
+    margin-bottom: 3rem;
+  }
+
+  /* ACTIVITY CARDS */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: var(--border);
+  }
+
+  .act-card {
+    background: var(--card);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+  }
+
+  .act-card:hover { background: #1c1c1c; }
+
+  .act-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .act-card:hover::after { transform: scaleX(1); }
+
+  .act-emoji {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .act-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .act-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .act-price {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    background: rgba(200,255,0,0.08);
+    border: 1px solid rgba(200,255,0,0.25);
+    padding: 0.6rem 1.2rem;
+    border-radius: 3px;
+  }
+
+  .act-price .amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+  }
+
+  .act-price .unit {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .act-count {
+    position: absolute;
+    top: 2rem; right: 2rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  /* PRICING TABLE */
+  .pricing-section {
+    background: #111;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pricing-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 4.5rem 2rem;
+  }
+
+  .price-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 2.5rem;
+  }
+
+  .price-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+
+  .price-row:last-child { border-bottom: none; }
+
+  .price-row.header { background: #000; }
+
+  .price-row.header div {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 1rem 1.5rem;
+  }
+
+  .price-cell { padding: 1.5rem; font-size: 0.9rem; }
+
+  .price-row:not(.header) .price-cell:first-child {
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .price-highlight {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+  }
+
+  .price-note {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+
+  /* VISIT SECTION */
+  .visit-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 4.5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .visit-info h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+  }
+
+  .info-icon { font-size: 1.2rem; margin-top: 0.1rem; width: 28px; flex-shrink: 0; }
+
+  .info-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .info-val { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+  .cta-box {
+    background: var(--accent);
+    padding: 3rem 2.5rem;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .cta-box h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: #000;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-box p {
+    font-size: 0.85rem;
+    color: rgba(0,0,0,0.6);
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .cta-box a {
+    display: inline-block;
+    background: #000;
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .cta-box a:hover { opacity: 0.85; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  footer .logo { display: block; margin-bottom: 0.5rem; }
+  footer p { font-size: 0.75rem; color: var(--muted); }
+
+  @media (max-width: 640px) {
+    .cards { grid-template-columns: 1fr; }
+    .price-row { grid-template-columns: 1fr 1fr; }
+    .price-row.header div:last-child,
+    .price-cell:last-child { display: none; }
+    .visit-section { grid-template-columns: 1fr; gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">THE <span>BREAK</span> ROOM</div>
+  <a href="#contact">📍 Find Us</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Gaming Lounge · Pune</div>
+  <h1>
+    YOUR SPOT<br>
+    <span class="outline">TO CHILL</span>
+  </h1>
+  <p class="hero-sub">PS5 gaming, pool tables, good vibes. Come as you are, leave when you want.</p>
+  <div class="hero-btns">
+    <a href="#activities" class="btn-p">See What's Here</a>
+    <a href="#pricing" class="btn-s">Check Prices</a>
+  </div>
+</section>
+
+<!-- ACTIVITIES -->
+<section id="activities" class="section">
+  <div class="section-tag">// what we've got</div>
+  <div class="section-title">PICK YOUR GAME</div>
+
+  <div class="cards">
+    <div class="act-card">
+      <span class="act-count">2–3 Stations</span>
+      <span class="act-emoji">🎮</span>
+      <div class="act-name">PlayStation 5</div>
+      <p class="act-desc">Jump on a PS5 and go. FIFA, GTA, Mortal Kombat — whatever you're feeling. Grab a controller and take over.</p>
+      <div class="act-price">
+        <span class="amount">₹150</span>
+        <span class="unit">/ hour</span>
+      </div>
+    </div>
+
+    <div class="act-card">
+      <span class="act-count">Available Now</span>
+      <span class="act-emoji">🎱</span>
+      <div class="act-name">Pool Table</div>
+      <p class="act-desc">Full-size pool table. Whether you're a serious player or just messing around, a good game of pool never gets old.</p>
+      <div class="act-price">
+        <span class="amount">₹200</span>
+        <span class="unit">/ hour</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<div class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="section-tag">// pricing</div>
+    <div class="section-title">SIMPLE. FAIR. THAT'S IT.</div>
+
+    <div class="price-table">
+      <div class="price-row header">
+        <div>Activity</div>
+        <div>Price</div>
+        <div>Availability</div>
+      </div>
+      <div class="price-row">
+        <div class="price-cell">🎮 &nbsp;PlayStation 5</div>
+        <div class="price-cell">
+          <div class="price-highlight">₹150</div>
+          <div class="price-note">per hour</div>
+        </div>
+        <div class="price-cell" style="color:var(--muted);font-size:0.85rem;">2–3 stations available</div>
+      </div>
+      <div class="price-row">
+        <div class="price-cell">🎱 &nbsp;Pool Table</div>
+        <div class="price-cell">
+          <div class="price-highlight">₹200</div>
+          <div class="price-note">per hour</div>
+        </div>
+        <div class="price-cell" style="color:var(--muted);font-size:0.85rem;">Walk in anytime</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VISIT -->
+<div id="contact">
+  <div class="visit-section">
+    <div class="visit-info">
+      <h2>COME<br>HANG OUT</h2>
+
+      <div class="info-item">
+        <div class="info-icon">🕐</div>
+        <div>
+          <div class="info-label">Hours</div>
+          <div class="info-val">Every Day — 11 AM to 11 AM</div>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <div class="info-label">Location</div>
+          <div class="info-val">Kharadi, Pune, Maharashtra</div>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div>
+          <div class="info-label">Call / WhatsApp</div>
+          <div class="info-val">+91 88570 16884</div>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">💬</div>
+        <div>
+          <div class="info-label">Walk-ins</div>
+          <div class="info-val">Always welcome — no booking needed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>READY TO PLAY?</h3>
+      <p>Just walk in. No appointments, no drama. First come, first served.</p>
+      <a href="tel:+918857016684">📞 Call Us Now</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">THE <span style="color:var(--text);">BREAK</span> ROOM</div>
+  <p>Gaming Lounge · Pune · Open Every Day</p>
+</footer>
+
+</body>
+</html>
